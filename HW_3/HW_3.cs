@@ -1,4 +1,8 @@
-﻿public class Program
+﻿// /// <summary>
+// /// для удобства все изменения пометил таким образом
+// /// </summary>
+
+public class Program
 {
     public static void Main(string[] args)
     {
@@ -85,13 +89,21 @@
                 throw ex;
             }
         }
-
-        try
+            // ///изменил порядок do-while и try-catch
+            // ///теперь do является оболочкой try, чтобы после возникшего исключения
+            // ///у пользователя была возможность ввести заново без повторного запуска программы
+            string? input = null;
+        do
         {
-            do
+            try
             {
                 Console.WriteLine("Введите требуемое выражение в виде \"Операнд Оператор Операнд\"");
-                var input = Console.ReadLine();
+                input = Console.ReadLine();
+                if (string.Equals(input, "стоп", StringComparison.OrdinalIgnoreCase))
+                {
+                    goto Found;
+                    //return;
+                }
                 string[] keyChar = input.Split(" ");
                 firstOperand = keyChar[0];
                 operators = keyChar[1];
@@ -99,18 +111,20 @@
 
                 //попытался проверить сразу все элементы массива через цикл,
                 //но он не возвращает значение true для res за пределами функции, как я понял. очень жаль :(
-                //bool res
+
+                
+                // ///№1 переделал выход из калькулятора и убрал чувствительность к регистру
+                
+                // PS придумал даже два способа, как сделать проверку через цикл,
+                // но только после слова "стоп" нужно поставить два пробела
                 // for (int i = 0; i < 2; i++)
                 // {
-                //     if (keyChar[i] == "стоп")
+                //     if (string.Equals(keyChar[i], "стоп", StringComparison.OrdinalIgnoreCase))
                 //     {
-                //         res=true;
-                //         break;
+                //         goto Found;
+                //         //return;
                 //     }
                 // }
-
-                if (firstOperand == "стоп" || operators == "стоп" || secondOperand == "стоп")
-                    break;
 
                 //только так смог проверить отсутствие оператора,
                 //но тогда все равно требуется нажать пробел после второго введенного числа
@@ -172,71 +186,78 @@
                     var ex = new Answer13Exception("Вы получили ответ 13!");
                     throw ex;
                 }
-            } while (firstOperand != "стоп" || operators != "стоп" || secondOperand != "стоп");
-        }
-        catch (NullOperatorException ex)
-        {
-            Console.BackgroundColor = ConsoleColor.Red;
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(ex.Data["data"]);
-            Console.ResetColor();
-        }
-        catch (InvalidOperatorException ex)
-        {
-            Console.BackgroundColor = ConsoleColor.Green;
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(ex.Message);
-            Console.ResetColor();
-        }
-        catch (IndexOutOfRangeException)
-        {
-            Console.BackgroundColor = ConsoleColor.Red;
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("Выражение некорректное, попробуйте написать в формате: " +
-                              "\na + b; \na * b;\na - b;\na / b");
-            Console.ResetColor();
-        }
-        catch (FormatException)
-        {
-            Console.BackgroundColor = ConsoleColor.Red;
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("Выражение некорректное, попробуйте написать в формате: " +
-                              "\na + b; \na * b;\na - b;\na / b");
-            Console.ResetColor();
-        }
-        catch (FormatOperandException ex)
-        {
-            Console.BackgroundColor = ConsoleColor.Red;
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(ex.Data["data"]);
-            Console.ResetColor();
-        }
-        catch (DivideByZeroException ex)
-        {
-            Console.BackgroundColor = ConsoleColor.DarkMagenta;
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(ex.Message);
-            Console.ResetColor();
-        }
-        catch (Answer13Exception ex)
-        {
-            Console.BackgroundColor = ConsoleColor.Green;
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(ex.Message);
-            Console.ResetColor();
-        }
-        catch (OverflowException)
-        {
-            Console.BackgroundColor = ConsoleColor.Blue;
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("Результат выражения вышел за границы int");
-            Console.ResetColor();
-        }
-        catch (Exception)
-        {
-            var ex = new Exception("Я не смог обработать ошибку");
-            throw;
-        }
+
+            }
+            catch (NullOperatorException ex)
+            {
+                Console.BackgroundColor = ConsoleColor.Red;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(ex.Data["data"]);
+                Console.ResetColor();
+            }
+            catch (InvalidOperatorException ex)
+            {
+                Console.BackgroundColor = ConsoleColor.Green;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(ex.Message);
+                Console.ResetColor();
+            }
+            catch (IndexOutOfRangeException)
+            {
+                Console.BackgroundColor = ConsoleColor.Red;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("Выражение некорректное, попробуйте написать в формате: " +
+                                  "\na + b; \na * b;\na - b;\na / b");
+                Console.ResetColor();
+            }
+            // catch (FormatException)
+            // {
+            //     Console.BackgroundColor = ConsoleColor.Red;
+            //     Console.ForegroundColor = ConsoleColor.White;
+            //     Console.WriteLine("Выражение некорректное, попробуйте написать в формате: " +
+            //                       "\na + b; \na * b;\na - b;\na / b");
+            //     Console.ResetColor();
+            // }
+            catch (FormatOperandException ex)
+            {
+                Console.BackgroundColor = ConsoleColor.Red;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(ex.Data["data"]);
+                Console.ResetColor();
+            }
+            catch (DivideByZeroException ex)
+            {
+                Console.BackgroundColor = ConsoleColor.DarkMagenta;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(ex.Message);
+                Console.ResetColor();
+            }
+            catch (Answer13Exception ex)
+            {
+                Console.BackgroundColor = ConsoleColor.Green;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(ex.Message);
+                Console.ResetColor();
+            }
+            catch (OverflowException)
+            {
+                Console.BackgroundColor = ConsoleColor.Blue;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("Результат выражения вышел за границы int");
+                Console.ResetColor();
+            }
+            catch (Exception)
+            {
+                throw new Exception("Я не смог обработать ошибку");
+            }
+            
+            //не уверен, что это условие в while вообще хоть что-то решает,
+            //ведь вышележащий if уже выводит из цикла при необходимости
+        } while (input != "стоп");
+        
+            // ///все еще изменение №1)
+        Found:
+            Console.WriteLine("Калькулятор завершает работу :(");
     }
 }
 
@@ -260,10 +281,5 @@ class FormatOperandException : Exception
 class Answer13Exception : Exception
 {
     public Answer13Exception(string message) 
-        : base(message) {}
-}
-class OutOfInt : Exception
-{
-    public OutOfInt(string message) 
         : base(message) {}
 }
